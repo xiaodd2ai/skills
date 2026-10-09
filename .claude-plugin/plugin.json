@@ -1,0 +1,14 @@
+{
+  "name": "xiaodd2ai-skills",
+  "version": "0.1.0",
+  "description": "Personal agent skills for engineering and everyday productivity.",
+  "author": {
+    "name": "xiaodd2ai",
+    "url": "https://github.com/xiaodd2ai"
+  },
+  "homepage": "https://github.com/xiaodd2ai/skills",
+  "repository": "https://github.com/xiaodd2ai/skills",
+  "license": "MIT",
+  "keywords": ["skills", "engineering", "productivity"],
+  "skills": []
+}
