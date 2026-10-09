@@ -1,0 +1,17 @@
+{
+  "name": "xiaodd2ai",
+  "owner": {
+    "name": "xiaodd2ai",
+    "url": "https://github.com/xiaodd2ai"
+  },
+  "description": "xiaodd2ai's personal agent skills.",
+  "plugins": [
+    {
+      "name": "xiaodd2ai-skills",
+      "source": "./",
+      "description": "Personal skills for engineering and everyday productivity.",
+      "category": "productivity",
+      "keywords": ["skills", "engineering", "productivity"]
+    }
+  ]
+}
