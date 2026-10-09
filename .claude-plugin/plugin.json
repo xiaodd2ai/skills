@@ -10,5 +10,7 @@
   "repository": "https://github.com/xiaodd2ai/skills",
   "license": "MIT",
   "keywords": ["skills", "engineering", "productivity"],
-  "skills": []
+  "skills": [
+    "./skills/productivity/screen-boss-candidates"
+  ]
 }

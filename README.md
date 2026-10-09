@@ -47,13 +47,13 @@ skills/
 
 ### 手动调用
 
-尚未加入技能。
+暂无仅限手动调用的技能。
 
 ### 自动调用
 
-尚未加入技能。
+- [screen-boss-candidates](skills/productivity/screen-boss-candidates/SKILL.md)：保持当前筛选条件，逐位核验 BOSS直聘在线简历，并停留供用户判断。[使用说明](docs/productivity/screen-boss-candidates.md)
 
-当前仓库是初始化骨架，插件配置已准备好，技能列表为空。加入第一批技能并通过校验后，再安装使用。
+自动调用类技能也可以通过 `$技能名` 明确调用。当前已发布技能已加入插件配置。
 
 ## 新增一个技能
 
