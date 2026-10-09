@@ -4,8 +4,8 @@
 
 ## 手动调用
 
-尚未加入技能。
+暂无仅限手动调用的技能。
 
 ## 自动调用
 
-尚未加入技能。
+- [screen-boss-candidates](screen-boss-candidates/SKILL.md)：保持当前筛选条件，逐位核验 BOSS直聘在线简历，并停留供用户判断。

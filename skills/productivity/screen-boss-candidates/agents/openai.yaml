@@ -1,0 +1,4 @@
+interface:
+  display_name: "BOSS逐位筛简历"
+  short_description: "根据岗位要求保持预设条件，逐位核验 BOSS 在线简历"
+  default_prompt: "使用 $screen-boss-candidates，根据岗位职责和当前预设条件，在 BOSS直聘 App 中逐位核验在线简历。"
