@@ -1,11 +1,22 @@
 ---
 name: screen-boss-candidates
-description: Review BOSS直聘 candidates one at a time against a supplied job description while preserving the user's existing search filters. Use when the user wants to inspect online resumes, continue to the next matching candidate, or verify job-related experience in the BOSS desktop app. Do not use for bulk outreach or messaging-only workflows.
+description: Review BOSS直聘 candidates one at a time using the user's hiring requirements for the current session while preserving existing search filters. Ask what kind of candidate the user wants if requirements are missing. Use when the user wants to inspect online resumes, continue to the next matching candidate, or verify job-related experience in the BOSS desktop app. Do not use for bulk outreach or messaging-only workflows.
 ---
 
 # BOSS 逐位筛查在线简历
 
-根据用户提供的岗位职责、任职要求和当前 BOSS直聘筛选条件，逐位找到有证据支持的匹配候选人，并把其在线简历留在屏幕上供用户判断。
+先了解用户本轮想找什么样的人，再按用户输入的招聘需求和当前 BOSS直聘筛选条件，逐位核验在线简历，并停留供用户判断。
+
+## 先获取用户本轮的招聘需求
+
+岗位要求由用户在使用时输入。技能本身只定义筛选流程，不预设职位、行业、业务模块、技能清单或任职门槛。
+
+- 用户可以粘贴完整岗位说明，也可以直接描述想找什么人、要负责什么工作、哪些条件必须满足、哪些条件只是优先。
+- 如果尚未提供可用于判断匹配的需求，先问：“你这次想找什么样的人？请描述主要工作、必须具备的经验或技能，以及其他岗位相关条件。”等待用户输入后再开始筛查。
+- 当前对话已经提供清晰要求时，直接沿用，不重复询问。用户明确指定使用页面中的岗位说明或筛选条件时，以其指定内容为输入。
+- 只把用户明确提供或指定的条件纳入要求。缺失的项目不自动变成门槛；影响判断的含糊条件再向用户澄清。
+- 区分必须满足的条件和优先条件，按用户的表述执行。不要从以前的招聘任务、技能中的示例或某位候选人的履历推导新的岗位要求。
+- 本轮招聘需求只用于当前筛选，不写回技能文件或公开示例。
 
 ## 操作工具与范围
 
@@ -19,13 +30,13 @@ description: Review BOSS直聘 candidates one at a time against a supplied job d
 
 开始筛查前，从用户文本和当前页面整理一份简短的内部基准：
 
-1. 岗位职责及需要覆盖的业务模块。
+1. 用户本轮输入或指定的招聘需求。
 2. 用户明确指定的硬性条件。
 3. 优先条件或可接受的弱项。
 4. 当前搜索关键词、城市、学历、经验、活跃度、到岗状态、排序及其他筛选项。
 5. 本轮已查看、已跳过和当前打开的候选人。
 
-用户后来补充的职业要求累积生效；只有用户明确撤回或替换时才取消。不要把一次候选人的偶然特点升级成长期硬性条件。
+同一轮筛选中，用户后来补充的职业要求累积生效；只有用户明确撤回或替换时才取消。开始新的招聘任务时重新获取该任务的需求，不沿用上一轮的岗位门槛。
 
 把当前页面筛选项视为锁定状态。用户说“不要改条件”“按这个条件继续”或只是说“下一位”时：
 
@@ -36,21 +47,14 @@ description: Review BOSS直聘 candidates one at a time against a supplied job d
 
 ## 用履历证据判断匹配
 
-先看搜索卡片，必要时打开在线简历核验工作职责。只根据可见、与岗位相关的职业证据判断；没有写明的能力记为“未证实”，不要猜测。
+逐项核验用户本轮提供的要求。先看搜索卡片，必要时打开在线简历查看具体工作经历。只根据可见、与本轮要求相关的职业证据判断；没有写明的能力记为“未证实”，不要猜测，也不要额外要求用户没有提出的能力。
 
 重点区分以下情况：
 
-- 专业、证书或所在行业不等于实际工作经验。例如“会计学专业”“任职金融公司”“懂财税知识”不能单独证明做过全盘财务。
-- 行政费用控制、预算意识或薪资核算不自动等于财务做账经验。
-- “统筹”“协助”“对接代理”与“独立负责”代表不同深度，向用户说明关键差异。
+- 专业、证书、职位名称或所在行业不能单独证明具有用户要求的实际工作经验。
+- 相关经历不自动等于具备用户要求的具体技能，需要查看履历中对应的职责或成果。
+- 当用户要求独立负责某项工作时，区分“统筹”“协助”“对接”与“独立负责”的深度，并说明可见证据。
 - 简历摘要含糊时，查看具体工作经历；仍无法确认硬性条件则跳过。
-
-按岗位实际需要核验，例如：
-
-- 财务：资金收付、银行结算、报销审核、凭证与账务、月结年结、报表、应收应付、开票、纳税申报、审计或税审对接。
-- 人事：招聘、入转调离、考勤薪资、社保公积金、档案、员工关系、劳动合规。
-- 行政：采购、固定资产、会议接待、合同档案、供应商、办公环境、证照及工商事务。
-- 其他：期望城市、学历、年限、英语能力、职称和团队管理，按用户给出的硬性或优先级处理。
 
 筛选属于就业场景。不得根据性别、年龄、头像、民族、婚育、健康或残障、宗教等敏感或受保护特征决定是否展示候选人。若用户提出这类条件，不把它们用于筛选；继续使用岗位相关的经验、技能、地点、资质和可到岗状态。
 
@@ -59,7 +63,7 @@ description: Review BOSS直聘 candidates one at a time against a supplied job d
 选择当前未看过且证据最充分的候选人，打开其在线简历并停留：
 
 - 确认简历姓名标识与目标候选人一致。
-- 确认期望城市等硬性条件。
+- 核验用户本轮明确提出的职业硬性条件。
 - 至少核验用户当前强调的核心工作经验。
 - 不同时打开或汇报多位候选人。
 
@@ -67,9 +71,7 @@ description: Review BOSS直聘 candidates one at a time against a supplied job d
 
 ## 向用户反馈
 
-成功打开后只给简短结论，例如：
-
-> 已打开当前候选人的在线简历。期望城市符合要求；已核实报销、开票与税务对接经历，独立全盘做账经验未证实。
+成功打开后说明已打开当前候选人的在线简历，只概述其满足哪些本轮要求、哪些条件尚未证实。反馈内容随用户输入的岗位需求变化，不套用固定岗位的结论。
 
 只陈述已核实事实，并指出影响判断的明显缺口。若无更多符合者，说明缺少的是哪项职业证据，并保持原筛选条件不变。
 

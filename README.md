@@ -51,7 +51,7 @@ skills/
 
 ### 自动调用
 
-- [screen-boss-candidates](skills/productivity/screen-boss-candidates/SKILL.md)：保持当前筛选条件，逐位核验 BOSS直聘在线简历，并停留供用户判断。[使用说明](docs/productivity/screen-boss-candidates.md)
+- [screen-boss-candidates](skills/productivity/screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。[使用说明](docs/productivity/screen-boss-candidates.md)
 
 自动调用类技能也可以通过 `$技能名` 明确调用。当前已发布技能已加入插件配置。
 
