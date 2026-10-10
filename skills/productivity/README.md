@@ -8,4 +8,4 @@
 
 ## 自动调用
 
-- [screen-boss-candidates](screen-boss-candidates/SKILL.md)：保持当前筛选条件，逐位核验 BOSS直聘在线简历，并停留供用户判断。
+- [screen-boss-candidates](screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。
