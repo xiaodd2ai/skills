@@ -6,11 +6,14 @@
 
 ## 安装
 
-在 Claude Code 中运行：
+仓库本身是一个插件市场，按需安装。在 Claude Code 中运行：
 
 ```text
 /plugin install xiaodd2ai-skills --marketplace xiaodd2ai/skills
+/plugin install wecom-autoreply --marketplace xiaodd2ai/skills
 ```
+
+第一行安装技能合集（下文「已发布技能」），第二行单独安装企业微信机器人插件。
 
 ## 目录结构
 
@@ -21,6 +24,8 @@ skills/
 ├── LICENSE
 ├── .claude/
 │   └── CLAUDE.md
+├── .agents/plugins/
+│   └── marketplace.json
 ├── .claude-plugin/
 │   ├── marketplace.json
 │   └── plugin.json
@@ -30,6 +35,8 @@ skills/
 │   ├── skill-template.md
 │   ├── engineering/
 │   └── productivity/
+├── plugins/
+│   └── wecom-autoreply/
 ├── scripts/
 │   ├── list-skills.sh
 │   └── check-repository.py
@@ -60,9 +67,14 @@ skills/
 ### 自动调用
 
 - [screen-boss-candidates](skills/productivity/screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。[使用说明](docs/productivity/screen-boss-candidates.md)
-- [wecom-autoreply](skills/productivity/wecom-autoreply/SKILL.md)：在 Mac 上常驻企业微信智能机器人，由 Claude Code 回复同事、记待办，主人可在企业微信派任务并确认被拦下的操作。[使用说明](docs/productivity/wecom-autoreply.md)
 
 自动调用类技能也可以通过 `$技能名` 明确调用。当前已发布技能已加入插件配置。
+
+## 独立插件
+
+自带脚本、常驻服务或需要单独安装的，放在 `plugins/<名字>/`，在插件市场里单独列出。
+
+- [wecom-autoreply](plugins/wecom-autoreply/README.md)：在 Mac 上常驻企业微信智能机器人，由 Claude Code 回复同事、记待办，主人可在企业微信派任务并确认被拦下的操作。
 
 ## 新增一个技能
 

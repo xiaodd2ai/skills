@@ -1,0 +1,20 @@
+{
+  "name": "xiaodd2ai",
+  "interface": {
+    "displayName": "xiaodd2ai Skills"
+  },
+  "plugins": [
+    {
+      "name": "wecom-autoreply",
+      "source": {
+        "source": "local",
+        "path": "./plugins/wecom-autoreply"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

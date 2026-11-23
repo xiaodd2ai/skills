@@ -1,6 +1,16 @@
 # 企业微信机器人自动回复
 
-[技能入口](../../skills/productivity/wecom-autoreply/SKILL.md) · [运维手册](../../skills/productivity/wecom-autoreply/references/operations.md)
+独立插件，单独安装。[技能入口](skills/wecom-autoreply/SKILL.md) · [运维手册](skills/wecom-autoreply/references/operations.md)
+
+## 安装
+
+在 Claude Code 中运行：
+
+```text
+/plugin install wecom-autoreply --marketplace xiaodd2ai/skills
+```
+
+装好后对 Claude Code 说「帮我在这台 Mac 上装好企业微信机器人」，它会按技能的步骤检查环境、安装 wecom-cli、引导你填写机器人凭证并启动常驻服务。
 
 ## 做什么
 
@@ -19,7 +29,7 @@ launchd 负责常驻：崩溃、注销、重启后都会自动拉起长连接。
 
 调用示例：
 
-> 使用 $wecom-autoreply，帮我在这台 Mac 上装好企业微信机器人，用 Claude Code 自动回复，并用 launchd 常驻。
+> 帮我在这台 Mac 上装好企业微信机器人，用 Claude Code 自动回复，并用 launchd 常驻。
 
 需要 macOS、已登录的 Claude Code、`uv`、Node 18+，以及企业微信管理后台里一个开启了「API 模式 → 长连接」的智能机器人。
 

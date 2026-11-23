@@ -1,4 +1,0 @@
-interface:
-  display_name: "企业微信机器人自动回复"
-  short_description: "Mac 上常驻的企业微信智能机器人，由 Claude Code 回复同事、记待办，并执行主人派的任务"
-  default_prompt: "使用 $wecom-autoreply，帮我在这台 Mac 上装好企业微信机器人，用 Claude Code 自动回复，并用 launchd 常驻。"
