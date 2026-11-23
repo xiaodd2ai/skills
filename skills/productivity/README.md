@@ -9,3 +9,4 @@
 ## 自动调用
 
 - [screen-boss-candidates](screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。
+- [wecom-autoreply](wecom-autoreply/SKILL.md)：在 Mac 上常驻企业微信智能机器人，由 Claude Code 回复同事、把要你办的事记成待办，并在企业微信里接收和确认你派的任务。

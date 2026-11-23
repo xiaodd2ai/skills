@@ -4,6 +4,14 @@
 
 这是 [xiaodd2ai](https://github.com/xiaodd2ai) 的个人技能仓库。目录组织参考 [mattpocock/skills](https://github.com/mattpocock/skills)，技能内容随实际使用逐步积累。
 
+## 安装
+
+在 Claude Code 中运行：
+
+```text
+/plugin install xiaodd2ai-skills --marketplace xiaodd2ai/skills
+```
+
 ## 目录结构
 
 ```text
@@ -52,6 +60,7 @@ skills/
 ### 自动调用
 
 - [screen-boss-candidates](skills/productivity/screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。[使用说明](docs/productivity/screen-boss-candidates.md)
+- [wecom-autoreply](skills/productivity/wecom-autoreply/SKILL.md)：在 Mac 上常驻企业微信智能机器人，由 Claude Code 回复同事、记待办，主人可在企业微信派任务并确认被拦下的操作。[使用说明](docs/productivity/wecom-autoreply.md)
 
 自动调用类技能也可以通过 `$技能名` 明确调用。当前已发布技能已加入插件配置。
 

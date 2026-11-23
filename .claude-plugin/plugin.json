@@ -1,6 +1,6 @@
 {
   "name": "xiaodd2ai-skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Personal agent skills for engineering and everyday productivity.",
   "author": {
     "name": "xiaodd2ai",
@@ -11,6 +11,7 @@
   "license": "MIT",
   "keywords": ["skills", "engineering", "productivity"],
   "skills": [
-    "./skills/productivity/screen-boss-candidates"
+    "./skills/productivity/screen-boss-candidates",
+    "./skills/productivity/wecom-autoreply"
   ]
 }
