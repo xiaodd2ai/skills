@@ -10,6 +10,13 @@
 /plugin install wecom-autoreply --marketplace xiaodd2ai/skills
 ```
 
+一行安装需要 Claude Code 2.1.275 或更高版本。更早的版本分两步：
+
+```text
+/plugin marketplace add xiaodd2ai/skills
+/plugin install wecom-autoreply@xiaodd2ai
+```
+
 装好后对 Claude Code 说「帮我在这台 Mac 上装好企业微信机器人」，它会按技能的步骤检查环境、安装 wecom-cli、引导你填写机器人凭证并启动常驻服务。
 
 ## 做什么

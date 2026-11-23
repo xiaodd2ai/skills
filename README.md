@@ -15,6 +15,14 @@
 
 第一行安装技能合集（下文「已发布技能」），第二行单独安装企业微信机器人插件。
 
+一行安装需要 Claude Code 2.1.275 或更高版本。更早的版本先添加插件市场，再按名字安装：
+
+```text
+/plugin marketplace add xiaodd2ai/skills
+/plugin install xiaodd2ai-skills@xiaodd2ai
+/plugin install wecom-autoreply@xiaodd2ai
+```
+
 ## 目录结构
 
 ```text
