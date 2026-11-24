@@ -16,7 +16,7 @@
     {
       "name": "wecom-autoreply",
       "source": "./plugins/wecom-autoreply",
-      "description": "Opt-in, macOS: a resident WeCom (企业微信) AI bot whose replies are written by headless, tool-less Claude Code. Requests that need you become numbered to-dos pushed to your WeCom; the owner can send tasks that Claude Code runs on the Mac and approve blocked actions from WeCom. Ships wecom-cli setup steps and a launchd agent that keeps the long connection alive.",
+      "description": "Opt-in, macOS: a resident WeCom (企业微信) AI bot whose replies are written by headless, tool-less Claude Code. Requests that need you become numbered to-dos pushed to your WeCom; what the owner says to the bot goes into a Claude Code terminal on the Mac (tmux, with tools), with each reply pushed back to WeCom. Ships wecom-cli setup steps and a launchd agent that keeps the long connection alive.",
       "category": "productivity",
       "keywords": ["wecom", "企业微信", "bot", "launchd"]
     }

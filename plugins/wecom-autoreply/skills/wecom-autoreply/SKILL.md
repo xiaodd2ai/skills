@@ -1,15 +1,16 @@
 ---
 name: wecom-autoreply
-description: Use when the user wants their WeCom (企业微信) AI bot to answer messages automatically with Claude Code, to run tasks on their Mac that they send it from WeCom, or wants to install, update, restart, stop or troubleshoot that bot — 企业微信机器人自动回复 / 装 wecom-cli / 机器人掉线了 / 机器人没回复 / 让机器人常驻 / 机器人的待办 / 让机器人执行任务 / 在企业微信里派任务 — on macOS.
+description: Use when the user wants their WeCom (企业微信) AI bot to answer messages automatically with Claude Code, to drive a Claude Code terminal on their Mac from WeCom, or wants to install, update, restart, stop or troubleshoot that bot — 企业微信机器人自动回复 / 装 wecom-cli / 机器人掉线了 / 机器人没回复 / 让机器人常驻 / 机器人的待办 / 让机器人执行任务 / 在企业微信里派任务 / 让机器人开终端干活 — on macOS.
 ---
 
 # wecom-autoreply — WeCom AI bot answered by Claude Code
 
 Sets up a resident bot on the user's Mac: colleagues message the WeCom AI bot, a headless
 `claude -p` (no tools, no MCP, no skills, empty working dir) writes the reply, and anything that
-needs the owner is recorded as a numbered to-do and pushed to them. The owner can also send
-the bot a task (`/task <dir> <what to do>`), which Claude Code runs **with tools** in that
-directory; actions auto mode blocks wait for the owner's approval in WeCom. launchd keeps the
+needs the owner is recorded as a numbered to-do and pushed to them. What the owner says to the
+bot goes into a **Claude Code terminal on the Mac** (tmux + a terminal window, with tools): one
+session per task, opened after the owner confirms its directory, each turn's reply pushed back
+to WeCom. launchd keeps the
 long connection alive across crashes, logouts and reboots. Report to the user in Chinese.
 
 Usage after setup, logs and troubleshooting: [references/operations.md](references/operations.md).
@@ -21,8 +22,8 @@ Usage after setup, logs and troubleshooting: [references/operations.md](referenc
 - The bot only sees messages sent **to the bot**. Messages to the user's own WeCom account cannot
   be read or answered on their behalf (`message send` for plain chats returns 853006).
 - It runs on this Mac: replies stop while the Mac sleeps or is off, and resume on wake.
-- Owner tasks run Claude Code with tools, the user's own settings and auto mode on this Mac.
-  Only the owner's single chat can start one (`OWNER_USERID`); colleagues still get text only.
+- The owner's terminal runs Claude Code with tools, the user's own settings and auto mode on
+  this Mac. Only the owner's single chat reaches it (`OWNER_USERID`); colleagues get text only.
 
 ## 1. Prerequisites
 
@@ -32,6 +33,7 @@ Check each and install what is missing (ask before installing):
 command -v claude && claude -p "ok" --tools ""   # Claude Code installed AND logged in
 command -v uv                                    # brew install uv
 command -v node npm                              # Node 18+ for wecom-cli
+command -v tmux                                  # brew install tmux (the owner's terminal)
 ```
 
 ## 2. wecom-cli (official WeCom CLI)
@@ -76,13 +78,13 @@ failure is `Not logged in` on a machine whose Claude Code login lives in shell v
 inherit; the script names them. Ask the user, then re-run with `--copy-claude-env` to append
 them to `.env` (never into the plist, which is world-readable).
 
-Then it copies `bot.py`, `tasks.py` and `approve_hook.py`, installs the LaunchAgent
-`com.xiaodd2ai.wecom-autoreply` (`RunAtLoad` + `KeepAlive`; the current shell's PATH, so tasks
-find the same tools, and any proxy variables), stops copies started by hand from the same
+Then it copies `bot.py`, `tasks.py` and `push_hook.py`, installs the LaunchAgent
+`com.xiaodd2ai.wecom-autoreply` (`RunAtLoad` + `KeepAlive`; the current shell's PATH, so the
+terminal finds the same tools, and any proxy variables), stops copies started by hand from the same
 directory and any other LaunchAgent running the same `bot.py` (its plist is moved into the app
 directory), and waits for `connected to WeCom` in the log. Re-running it later updates the code
 files (old ones backed up) and never touches `.env`, `persona.md`, `sessions.json`,
-`todos.jsonl`, `tasks.json` or `bot.log`.
+`todos.jsonl` or `bot.log`.
 
 ## 5. Identity and duties (optional, recommended)
 
@@ -90,7 +92,7 @@ Ask the user, in one go: whose assistant the bot is (name, what they own), what 
 handle for colleagues, and what it must never do (e.g. promise dates on the owner's behalf).
 Write the answers to `~/wecom-autoreply/persona.md`, starting from
 [scripts/persona.example.md](scripts/persona.example.md) — plain lines, `#` lines are comments.
-It is prepended to the system prompt of every reply (colleagues and owner mode) and re-read
+It is prepended to the system prompt of every reply to a colleague and re-read
 per message: edits apply to the next message, no restart. Check with
 `uv run ~/wecom-autoreply/bot.py --test "你是谁？你负责什么？"`.
 
@@ -100,26 +102,35 @@ per message: edits apply to the next message, no restart. Check with
 2. Ask a colleague (or a second account) to message the bot; watch
    `tail -f ~/wecom-autoreply/bot.log` for `inbound text`, `reply to`, and — for a request to the
    owner — `owner action` + `notified owner via WeCom`.
-3. The owner asks the bot 「有什么要我处理的？」 and gets the numbered open to-dos.
+3. The owner sends the bot a message, answers `/yes` to the directory question, and a Claude
+   Code terminal opens on the Mac; its reply arrives in WeCom (section 7).
 
 Stop or remove: `bash "${CLAUDE_SKILL_DIR}/scripts/install.sh" --uninstall` (data is kept).
 
-## 7. Owner tasks (optional)
+## 7. The owner's Claude Code terminal
 
-The owner, in a single chat with the bot, sends `/task <dir> <what to do>` (`/help` lists every
-command). Tell the user how it behaves before they rely on it:
+Whatever the owner says to the bot in a single chat is typed into an interactive Claude Code
+session on this Mac (`/help` in the chat lists the commands). Tell the user how it behaves:
 
-- Each task is its own Claude Code session in `<dir>`, run in **auto mode with the user's own
-  settings** (plugins, MCP servers, auto mode rules). One task runs at a time; others queue.
-- A call auto mode blocks is not executed. The run finishes what it can, then the bot pushes the
-  blocked calls with Claude's explanation; `/yes` re-runs exactly those calls (the bot allows
-  them for that one resumed run only), `/no [说明]` tells Claude to do without them.
-- When a run ends, the result is pushed; `/re <编号> <内容>` continues the same session.
-- `<dir>` is absolute, `~/…`, or relative to `TASK_BASE_DIR` in `.env` (default: home).
-- launchd's environment has the PATH of the shell that ran `install.sh`, but not other
-  exported variables (an MCP server that needs a token from the shell will not start).
+- **No session yet:** the bot holds the message and asks where to open one. `/yes` uses
+  `TASK_BASE_DIR` from `.env` (default: home); a path (absolute, `~/…`, or relative to it) picks
+  another directory; `/no` cancels. Nothing starts before that answer.
+- **Session open:** every message goes into the same session, so one task stays in one
+  session. `/new` ends it; the next message asks for a directory again.
+- The session runs in tmux (socket `wecom`, session `claude`) and a terminal window opens on
+  it — Ghostty when installed, otherwise Terminal.app. Reopen it with
+  `tmux -L wecom attach -t claude`. The session keeps running without a window.
+- After each turn a `Stop` hook (`push_hook.py`) sends Claude's last reply to the owner's WeCom
+  through `wecom-cli`.
+- It runs in **auto mode with the user's own settings** (plugins, MCP servers, auto mode
+  rules). A call auto mode blocks is not executed and is **not** forwarded to WeCom: Claude
+  says what was blocked and the owner deals with it at the terminal.
+- To-dos: the session is told where `todos.jsonl` is, lists it when asked and fills in
+  `done_at` when the owner says one is done.
+- The session has the PATH of the shell that ran `install.sh`, but not other exported
+  variables (an MCP server that needs a token from the shell will not start).
 
-Verify in a terminal without WeCom:
-`uv run ~/wecom-autoreply/bot.py --test-task <dir> "执行 pwd，告诉我结果"` — it prints the
-result, and when something is blocked it asks for approval on stdin. Details:
-[references/operations.md](references/operations.md#owner-tasks).
+Verify in a terminal without WeCom: `uv run --env-file ~/wecom-autoreply/.env ~/wecom-autoreply/bot.py --test-owner`
+— type the owner's messages there; it opens the real terminal session, and with `OWNER_USERID`
+set the replies are pushed to WeCom. Details:
+[references/operations.md](references/operations.md#the-owners-claude-code-terminal).

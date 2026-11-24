@@ -10,13 +10,8 @@
 | Text + images/files (mixed) | Text is handled; Claude is told N attachments exist but cannot be seen |
 | Image, file, any other type | Sender is told the bot cannot read it; owner gets a to-do + push |
 | A message that needs the owner | Claude flags it → numbered to-do in `todos.jsonl` + WeCom push to the owner (macOS notification if the push fails) |
-| `/new` or `/reset` | Starts a fresh Claude session for that chat |
-| Owner's `/task`, `/yes`, `/no`, `/re`, `/tasks`, `/help` (single chat only) | Owner tasks — see [Owner tasks](#owner-tasks). From anyone else, or in a group, these are ordinary text |
-
-**Owner mode** — the owner's own single-chat messages get a private-assistant prompt with the
-open to-dos attached. 「有什么要我处理的？」 lists them by number; 「#3 做完了」 /
-「张三那几件处理好了」 / 「全部完成」 marks them done (Claude asks instead of guessing when it
-is unclear which). Open to-dos stay listed until marked done.
+| `/new` or `/reset` from a colleague or in a group | Starts a fresh Claude session for that chat |
+| Anything from the owner in a single chat | Goes to the owner's Claude Code terminal — see [The owner's Claude Code terminal](#the-owners-claude-code-terminal). In a group the owner is handled like a colleague |
 
 Every inbound message writes an `inbound <type> from <userid>` log line, so nothing is dropped
 silently.
@@ -25,56 +20,57 @@ silently.
 
 | File | Content |
 |---|---|
-| `bot.py`, `tasks.py`, `approve_hook.py` | The bot, the task runner and the approval hook (updated by `install.sh`; previous versions kept as `*.bak-*`) |
+| `bot.py`, `tasks.py`, `push_hook.py` | The bot, the owner's terminal session and the hook that pushes its replies to WeCom (updated by `install.sh`; previous versions kept as `*.bak-*`) |
 | `.env` | Bot credentials and options — secret, mode 600, never commit or print it |
-| `persona.md` | Optional identity and duties, prepended to every system prompt; re-read per message (no restart). `persona.example.md` next to it is the template |
+| `persona.md` | Optional identity and duties, prepended to the system prompt of replies to colleagues; re-read per message (no restart). `persona.example.md` next to it is the template |
 | `bot.log` | Messages, replies, to-dos, errors — contains message text, mode 600 |
 | `sessions.json` | chat → Claude session id |
-| `todos.jsonl` | One to-do per line: `id`, `time`, `from`, `chat`, `summary`, `text`, `done_at` |
-| `tasks.json` | Owner tasks: directory, prompt, Claude session id, status, blocked calls, last result — mode 600. `tasks-test.json` is the same for `--test-task` |
+| `todos.jsonl` | One to-do per line: `id`, `time`, `from`, `chat`, `summary`, `text`, `done_at`. The owner's terminal session reads it and fills in `done_at` |
+| `task-prompt.txt` | The message that opened the current terminal session — mode 600 |
 | `workdir/` | Claude's empty working directory — must stay outside every repository |
 
-## Owner tasks
+## The owner's Claude Code terminal
 
-| Command (owner's single chat) | Effect |
+| Owner's single chat | Effect |
 |---|---|
-| `/task <dir> <what to do>` | New task: its own Claude Code session in `<dir>`. `#3` as the text hands Claude to-do #3 (colleague's words marked as data), optionally followed by the owner's notes |
-| `/yes [编号]` | Approve the blocked calls of a waiting task and continue. The number can be left out when only one task is waiting |
-| `/no [编号] [说明]` | Do not make the blocked calls; Claude continues without them or wraps up |
-| `/re <编号> <内容>` | Continue a finished or failed task in the same session |
-| `/tasks` | The last 10 tasks and their status |
+| A message, no session open | The bot keeps it and asks for the directory. Nothing starts yet |
+| `/yes` / a directory / `/no` (while the bot is asking) | Open the session in `TASK_BASE_DIR` / in that directory (absolute, `~/…`, or relative to `TASK_BASE_DIR`) / drop the message. Anything else is answered with the question again |
+| A message, session open | Typed into the session and submitted; the bot answers 「已发到终端」 |
+| `/new` | Ends the session (kills the tmux session). The next message asks for a directory again |
+| `/help` | The commands, and how to reopen the window |
 
-How a run works:
+How it works:
 
-1. A single worker takes runs from the queue one at a time and starts
-   `claude -p --output-format json --permission-mode auto` in the task directory, with the
-   owner's normal settings, a system prompt for unattended work, and the message on stdin. The
-   first run passes `--session-id` (chosen when the task is created); later runs `--resume` it.
-   `WECOM_BOT_ID` / `WECOM_BOT_SECRET` are removed from Claude's environment.
-2. When the run ends, `permission_denials` in the JSON result lists the calls auto mode blocked.
-   None: the result is pushed (task `done`). Some: the calls (command / file / URL, first
-   2000 characters) and Claude's explanation are pushed and the task waits.
-3. `/yes` resumes the session with "re-run these exactly", adding a `PreToolUse` hook
-   (`approve_hook.py`) through `--settings` and the approved calls in `WECOM_APPROVED_CALLS`.
-   The hook allows a call only when its tool and input match an approved one (ignoring
-   `description` / `timeout`), and only in that run: the list lives in that run's environment,
-   never in a file the session could write. A deny from another hook still wins.
-4. A run longer than `TASK_TIMEOUT` (default 1800 s) is killed with everything it started. A run
-   queued or in flight when the bot restarts is marked failed, not replayed; `/re` continues it.
+1. The session is `claude --permission-mode auto` in a detached tmux session (`tmux -L wecom`,
+   session `claude`: a socket of its own, apart from the owner's tmux), started in the confirmed
+   directory with the owner's normal settings, a system prompt for remote use, and the held
+   message as its first prompt. `AskUserQuestion` is disallowed: nobody is there to click.
+   `WECOM_BOT_ID` / `WECOM_BOT_SECRET` are removed from its environment.
+2. A window is opened on it: `open -na Ghostty.app --args -e tmux … attach` when Ghostty is
+   installed, otherwise Terminal.app through `osascript` (macOS asks once to allow it).
+3. Later messages are pasted into the pane (`load-buffer` from stdin, bracketed `paste-buffer`,
+   then Enter). While Claude is working, Claude Code queues them.
+4. `--settings` adds a `Stop` hook, `push_hook.py`: after each turn it sends
+   `last_assistant_message` to `OWNER_USERID` with `wecom-cli message aibot send` (cut at
+   20480 bytes). A failed send exits 1 and shows in the terminal as a hook error.
+5. The session is "open" while its pane's process is alive. When Claude exits (`/exit` in the
+   terminal, a crash), the next message asks for a directory again.
 
 Known limits:
 
-- Auto mode only consults its classifier for some calls: commands it treats as routine (e.g.
-  `touch` inside the task directory) and actions the owner named in the task text pass without a
-  check. The approval loop covers what the classifier blocks, not every risky call.
-- When Claude makes several calls at once and one is blocked, auto mode tends to block the whole
-  batch, so harmless calls like `date` can show up in the approval list.
-- Through a relay login the denial reason is always "judged dangerous (no explanation)"; the push
-  shows Claude's own explanation instead.
-- If Claude re-runs an approved call with a different command or input, it no longer matches and
-  is blocked again — the bot asks again.
-- Pausing mid-run with a `PreToolUse` `defer` was measured (2.1.325) and rejected: with several
-  calls at once it reports only one and drops the others on resume.
+- The owner's words never go through tmux's command line — tmux ends a command at an argument
+  that ends in `;` — so the first message goes through `task-prompt.txt` and later ones through
+  a paste buffer.
+- A call auto mode blocks is not executed and not forwarded to WeCom; the reply says what was
+  blocked. Dialogs (the trust question of a new directory, a permission prompt after leaving
+  auto mode) wait at the terminal, and a message sent meanwhile is typed into that dialog.
+- Replies typed at the terminal by the owner are pushed to WeCom as well: it is the same session.
+- A pending first message is kept in memory only; after a bot restart, send it again. Whether
+  an open session outlives a bot restart under launchd was not tested.
+- Verified on Claude Code 2.1.330, tmux 3.5a, Ghostty 1.4.0: a first prompt starting with `-`,
+  a follow-up ending in `;`, a message sent while Claude was working (queued, answered in the
+  same turn), the `Stop` payload, and a Ghostty window attaching. The Terminal.app fallback was
+  not run.
 
 ## launchd
 
@@ -97,13 +93,14 @@ After editing `.env`, restart with `kickstart -k`. A crash is restarted after
 | Owner never gets pushes (`WeCom notify failed`) | The owner must have sent the bot a message first (853008); `OWNER_USERID` must be the owner's userid |
 | Bot keeps disconnecting / reconnecting | Two processes share one bot (another machine, a terminal copy): one long connection per bot, the newest wins |
 | Colleague's message missing from the log | It went to the user's own account, not to the bot; only messages to the bot arrive |
-| A task fails with `command not found` or an MCP server missing | Tasks run in launchd's environment: PATH comes from the shell that ran `install.sh` (re-run it from a shell that has the tool); other exported variables are not carried |
-| A task waits forever | It is waiting for `/yes` or `/no` — `/tasks` shows its status |
+| `command not found` or an MCP server missing in the owner's terminal | It runs in launchd's environment: PATH comes from the shell that ran `install.sh` (re-run it from a shell that has the tool); other exported variables are not carried |
+| The owner's message got 「已发到终端」 but no reply comes | Look at the terminal (`tmux -L wecom attach -t claude`): Claude may still be working, be stopped at a dialog (e.g. the trust question of a directory it has not seen), or show a `Stop hook` error from `push_hook.py` (wecom-cli not authorized, or the owner never messaged the bot: 853008) |
+| 「Claude Code 没能在 … 启动」 | The text after it is what the terminal showed before Claude exited — usually not logged in under launchd (`install.sh --copy-claude-env`) |
 
 ## Isolation — why the reply `claude -p` flags are what they are
 
-These apply to replies (colleagues and owner mode). Owner tasks deliberately run with tools and
-the owner's settings, as above.
+These apply to replies to colleagues. The owner's terminal deliberately runs with tools and the
+owner's settings, as above.
 
 Verified against Claude Code 2.1.323:
 

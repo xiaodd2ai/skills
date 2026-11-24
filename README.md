@@ -82,7 +82,7 @@ skills/
 
 自带脚本、常驻服务或需要单独安装的，放在 `plugins/<名字>/`，在插件市场里单独列出。
 
-- [wecom-autoreply](plugins/wecom-autoreply/README.md)：在 Mac 上常驻企业微信智能机器人，由 Claude Code 回复同事、记待办，主人可在企业微信派任务并确认被拦下的操作。
+- [wecom-autoreply](plugins/wecom-autoreply/README.md)：在 Mac 上常驻企业微信智能机器人，由 Claude Code 回复同事、记待办；主人在单聊里说的话会进本机的 Claude Code 终端，每轮回复推回企业微信。
 
 ## 新增一个技能
 

@@ -7,7 +7,7 @@
 #   install.sh --uninstall        stop the agent and remove its plist (data is kept)
 #
 # The bot lives in $WECOM_AUTOREPLY_HOME (default ~/wecom-autoreply). Re-running
-# is safe: .env, persona.md, sessions.json, todos.jsonl, tasks.json and bot.log are
+# is safe: .env, persona.md, sessions.json, todos.jsonl and bot.log are
 # never overwritten; changed code files are backed up before they are replaced.
 set -euo pipefail
 
@@ -30,20 +30,25 @@ if [ "${1:-}" = "--uninstall" ]; then
 fi
 
 missing=""
-for bin in uv claude wecom-cli; do
+for bin in uv claude wecom-cli tmux; do
     command -v "$bin" >/dev/null 2>&1 || missing="$missing $bin"
 done
 [ -z "$missing" ] || { echo "Missing on PATH:$missing (see the skill's prerequisites)." >&2; exit 1; }
 
 mkdir -p "$APP/workdir"
 stamp="$(date +%Y%m%d%H%M%S)"
-for f in bot.py tasks.py approve_hook.py; do
+for f in bot.py tasks.py push_hook.py; do
     if [ -f "$APP/$f" ] && ! cmp -s "$SRC/$f" "$APP/$f"; then
         cp -p "$APP/$f" "$APP/$f.bak-$stamp"
         echo "Backed up the previous $f."
     fi
     cp "$SRC/$f" "$APP/$f"
 done
+# 0.3.0's approval hook: nothing uses it since the owner's messages go to a terminal.
+if [ -f "$APP/approve_hook.py" ]; then
+    mv "$APP/approve_hook.py" "$APP/approve_hook.py.bak-$stamp"
+    echo "Retired approve_hook.py (kept as a backup)."
+fi
 cp "$SRC/persona.example.md" "$APP/persona.example.md"
 [ -f "$APP/persona.md" ] || echo "Optional: give the bot an identity and duties — copy $APP/persona.example.md to $APP/persona.md and edit it."
 
@@ -94,11 +99,12 @@ done
 xml() { sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' <<<"$1"; }
 
 # launchd starts with a bare PATH: carry the directories of every tool the bot
-# shells out to (uv, claude, wecom-cli and the node it runs on), then this
-# shell's PATH, which owner tasks need for git, gh, pnpm and the like.
+# shells out to (uv, claude, wecom-cli, tmux and the node it runs on), then this
+# shell's PATH, which the owner's Claude Code terminal needs for git, gh, pnpm
+# and the like.
 launch_path=""
 add_path() { case ":$launch_path:" in *":$1:"*) ;; *) launch_path="${launch_path:+$launch_path:}$1" ;; esac; }
-for bin in uv claude wecom-cli node; do
+for bin in uv claude wecom-cli tmux node; do
     add_path "$(dirname "$(command -v "$bin" 2>/dev/null || echo /usr/bin/x)")"
 done
 IFS=: read -ra shell_path <<<"$PATH"

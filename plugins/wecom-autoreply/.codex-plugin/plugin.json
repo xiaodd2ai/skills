@@ -1,7 +1,7 @@
 {
   "name": "wecom-autoreply",
-  "version": "0.4.0",
-  "description": "Opt-in, macOS: a resident WeCom (企业微信) AI bot whose replies are written by headless Claude Code, and which runs the owner's tasks with Claude Code, asking in WeCom before actions auto mode blocks. Includes wecom-cli setup and a launchd agent. The bot itself requires Claude Code.",
+  "version": "0.5.0",
+  "description": "Opt-in, macOS: a resident WeCom (企业微信) AI bot whose replies are written by headless Claude Code, and which types the owner's messages into a Claude Code terminal on the Mac, pushing each reply back to WeCom. Includes wecom-cli setup and a launchd agent. The bot itself requires Claude Code.",
   "author": {
     "name": "xiaodd2ai",
     "url": "https://github.com/xiaodd2ai"
@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "WeCom Auto-Reply",
     "shortDescription": "WeCom AI bot answered by Claude Code, kept alive by launchd.",
-    "longDescription": "Sets up a resident WeCom AI bot on macOS: replies come from headless, tool-less Claude Code; requests for the owner become numbered to-dos pushed to WeCom; the owner can send tasks that Claude Code runs with tools, approving blocked actions from WeCom. Includes wecom-cli installation and a launchd agent. The bot itself requires Claude Code.",
+    "longDescription": "Sets up a resident WeCom AI bot on macOS: replies come from headless, tool-less Claude Code; requests for the owner become numbered to-dos pushed to WeCom; the owner's own messages go into a Claude Code terminal on the Mac (tmux, with tools), with each reply pushed back to WeCom. Includes wecom-cli installation and a launchd agent. The bot itself requires Claude Code.",
     "developerName": "xiaodd2ai",
     "category": "Productivity",
     "capabilities": [],

@@ -1,8 +1,8 @@
 {
   "name": "wecom-autoreply",
   "displayName": "WeCom Auto-Reply",
-  "version": "0.4.0",
-  "description": "Opt-in, macOS: a resident WeCom (企业微信) AI bot whose replies are written by headless, tool-less Claude Code; requests that need you become numbered to-dos pushed to your WeCom, with an owner mode to list and close them. The owner can also send tasks that Claude Code runs with tools on the Mac; actions auto mode blocks wait for the owner's approval in WeCom. Includes wecom-cli setup and a launchd agent that keeps the long connection alive.",
+  "version": "0.5.0",
+  "description": "Opt-in, macOS: a resident WeCom (企业微信) AI bot whose replies are written by headless, tool-less Claude Code; requests that need you become numbered to-dos pushed to your WeCom. What the owner says to the bot goes into a Claude Code terminal on the Mac (tmux + a window, with tools, one session per task, directory confirmed first), which also lists and closes the to-dos; each turn's reply is pushed back to WeCom. Includes wecom-cli setup and a launchd agent that keeps the long connection alive.",
   "author": {
     "name": "xiaodd2ai",
     "url": "https://github.com/xiaodd2ai"
