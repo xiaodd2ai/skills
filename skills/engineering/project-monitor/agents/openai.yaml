@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目更新监控"
+  short_description: "核对项目依赖与 fork 上游的新版本、安全公告，以及同类产品的新功能"
+  default_prompt: "使用 $project-monitor，跑一次当前项目今天的更新：项目用到的开源依赖和上游有什么新版本或安全公告，同类产品的用户现在能做什么新事。"

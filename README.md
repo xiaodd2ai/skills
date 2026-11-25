@@ -74,6 +74,7 @@ skills/
 
 ### 自动调用
 
+- [project-monitor](skills/engineering/project-monitor/SKILL.md)：核对项目用到的开源依赖、fork 与移植源码的上游有什么新版本或安全公告，以及同类产品的用户现在能做什么新事；手动跑一次出当天摘要，或设成定时检查。[使用说明](docs/engineering/project-monitor.md)
 - [screen-boss-candidates](skills/productivity/screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。[使用说明](docs/productivity/screen-boss-candidates.md)
 
 自动调用类技能也可以通过 `$技能名` 明确调用。当前已发布技能已加入插件配置。
