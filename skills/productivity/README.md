@@ -8,4 +8,5 @@
 
 ## 自动调用
 
+- [check-x-visibility](check-x-visibility/SKILL.md)：核查 X 账号在搜索、回复和推荐中的可见性，结合标签报告和逐帖数据判断限流证据。
 - [screen-boss-candidates](screen-boss-candidates/SKILL.md)：先获取用户本轮招聘需求，保持当前筛选条件，逐位核验 BOSS直聘在线简历。

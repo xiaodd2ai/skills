@@ -1,0 +1,4 @@
+interface:
+  display_name: "检查 X 账号是否被限流"
+  short_description: "核查搜索、回复和推荐曝光，结合账号标签报告判断限制的范围与时间"
+  default_prompt: "使用 $check-x-visibility 检查我提供的 X 账号，说明哪些限制有证据，哪些还需要补充材料。"

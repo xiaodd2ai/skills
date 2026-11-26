@@ -1,6 +1,6 @@
 {
   "name": "xiaodd2ai-skills",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Personal agent skills for engineering and everyday productivity.",
   "author": {
     "name": "xiaodd2ai",
@@ -12,6 +12,7 @@
   "keywords": ["skills", "engineering", "productivity"],
   "skills": [
     "./skills/engineering/project-monitor",
+    "./skills/productivity/check-x-visibility",
     "./skills/productivity/screen-boss-candidates"
   ]
 }
